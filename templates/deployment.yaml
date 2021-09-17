@@ -1,0 +1,81 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "bds-maneger-core.fullname" . }}
+  labels:
+    {{- include "bds-maneger-core.labels" . | nindent 4 }}
+spec:
+  selector:
+    matchLabels:
+      {{- include "bds-maneger-core.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "bds-maneger-core.selectorLabels" . | nindent 8 }}
+    spec:
+      volumes:
+        - name: bds-core-save-volume
+          persistentVolumeClaim:
+            claimName: bds-core-save
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "ghcr.io/the-bds-maneger/core:{{ .Values.image.tag | default "latest" }}"
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 19132
+              protocol: UDP
+              name: server-v4
+            - containerPort: 19133
+              protocol: UDP
+              name: server-v6
+            - containerPort: 1932
+              protocol: TCP
+              name: bds-api
+          volumeMounts:
+            - name: bds-core-save-volume
+              mountPath: /root/bds_core
+          {{- if .Values.BdsMangerCore }}
+          env:
+            {{- if .Values.BdsMangerCore.players }}
+            - name: PLAYERS
+              value: {{ toString . }}
+            {{- end }}
+            {{- if .Values.BdsMangerCore.world }}
+            - name: WORLD_NAME
+              value: {{ toString . }}
+            {{- end }}
+            {{- if .Values.BdsMangerCore.description }}
+            - name: DESCRIPTION
+              value: {{ toString . }}
+            {{- end }}
+            {{- if .Values.BdsMangerCore.gamemode }}
+            - name: GAMEMODE
+              value: {{ toString . }}
+            {{- end }}
+            {{- if .Values.BdsMangerCore.difficulty }}
+            - name: DIFFICULTY
+              value: {{ toString . }}
+            {{- end }}
+            {{- if .Values.BdsMangerCore.allow_admin_commands }}
+            - name: ENABLE_COMMANDS
+              value: {{ toString . }}
+            {{- end }}
+            {{- if .Values.BdsMangerCore.required_account_or_loged_in }}
+            - name: ACCOUNT
+              value: {{ toString . }}
+            {{- end }}
+            {{- if .Values.BdsMangerCore.bds_platform }}
+            - name: SERVER
+              value: {{ toString . }}
+            {{- end }}
+            {{- if .Values.BdsMangerCore.auto_update_server }}
+            - name: UPDATE_SERVER
+              value: {{ toString . }}
+            {{- end }}
+          {{- end }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}

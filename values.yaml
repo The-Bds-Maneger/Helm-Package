@@ -1,0 +1,44 @@
+# Default values for bds-maneger-core.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+# Bds Maneger Core Settings
+labels:
+  - bds-maneger-core
+image:
+  # Tag Version to Bds Maneger Core
+  tag: latest
+storage:
+  # Storage volume size
+  size: 8Gi
+
+# Server and Core Settings
+BdsMangerCore:
+  players: 5
+  world: The Ultimate Server
+  description: running Minecraft Server on Bds Maneger by Bds Manager Project
+  gamemode: survival
+  difficulty: normal
+  allow_admin_commands: false
+  required_account_or_loged_in: false
+  bds_platform: bedrock
+  auto_update_server: true
+
+# Kubernetes Settings
+service: {}
+  # type: ClusterIP
+
+podAnnotations: {}
+volumeAnnotations: {}
+
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi

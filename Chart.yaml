@@ -1,0 +1,7 @@
+apiVersion: v2
+name: bds-maneger-core
+version: v1.0
+description: Manage a Minecraft server together with a Rest API
+maintainers: 
+  - name: Matheus Sampaio Queiroga
+    email: srherobrine20@gmail.com
